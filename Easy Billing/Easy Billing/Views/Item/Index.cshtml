@@ -1,0 +1,179 @@
+﻿@*﻿@model IEnumerable<EasyBilling.Models.Item_Tyre>*@
+@model EasyBilling.Models.Item_Tyre
+@{
+    //Layout = null;
+    ViewBag.Title = "Index";
+   
+}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>*@
+
+<div class="container" style="background-color:#fff;">
+    <div>
+        <h2>Item tyre list</h2>
+
+        @*<p>
+                @Html.ActionLink("Create New", "Create")
+            </p>*@
+    </div>
+    <br />
+    <div>
+        @using (Ajax.BeginForm("Create", "Item",
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        OnSuccess = "OnSuccess"
+                        //UpdateTargetId = "table_id",
+                        //InsertionMode = InsertionMode.Replace
+                    }, new { @class = "form-inline" }))
+        {
+          
+
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="col-lg-12" style="margin:5px 5px 5px 5px">
+
+            <div class="form-group col-lg-4">
+                @Html.LabelFor(model => model.Company_name, htmlAttributes: new { })
+
+
+
+                @Html.EditorFor(model => model.Company_name, new { htmlAttributes = new { @class = "form-control input-sm", @style = "margin-left:15px;text-align:left; " } })
+                @Html.ValidationMessageFor(model => model.Company_name, "", new { @class = "text-danger" })
+
+            </div>
+           
+
+            <div class="form-group col-lg-4">
+                @Html.LabelFor(model => model.Tyre_type, htmlAttributes: new { })
+
+                @Html.EditorFor(model => model.Tyre_type, new { htmlAttributes = new { @class = "form-control input-sm", @style = "margin-left:13px;text-align:left; " } })
+                @Html.ValidationMessageFor(model => model.Tyre_type, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="form-group col-lg-4">
+                @Html.LabelFor(model => model.Tyre_feel, htmlAttributes: new { })
+
+                @Html.EditorFor(model => model.Tyre_feel, new { htmlAttributes = new { @class = "form-control input-sm", @style = "margin-left:43px;text-align:left; " } })
+                @Html.ValidationMessageFor(model => model.Tyre_feel, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+        <div class="col-lg-12" style="margin:5px 5px 5px 5px">
+
+            <div class="form-group col-lg-4">
+                @Html.LabelFor(model => model.Tyre_make, htmlAttributes: new { })
+
+                @Html.EditorFor(model => model.Tyre_make, new { htmlAttributes = new { @class = "form-control input-sm", @style = "margin-left:57px;text-align:left; " } })
+                @Html.ValidationMessageFor(model => model.Tyre_make, "", new { @class = "text-danger" })
+
+            </div>
+
+
+            <div class="form-group col-lg-4">
+                @Html.LabelFor(model => model.Tyre_size, htmlAttributes: new { })
+
+                @Html.EditorFor(model => model.Tyre_size, new { htmlAttributes = new { @class = "form-control input-sm", @style = "margin-left:15px;text-align:left; " } })
+                @Html.ValidationMessageFor(model => model.Tyre_size, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="form-group col-lg-4">
+                @Html.LabelFor(model => model.Vehicle_type, htmlAttributes: new { })
+
+                @Html.EditorFor(model => model.Vehicle_type, new { htmlAttributes = new { @class = "form-control input-sm", @style = "margin-left:15px;text-align:left; " } })
+                @Html.ValidationMessageFor(model => model.Vehicle_type, "", new { @class = "text-danger" })
+
+            </div>
+
+        </div>
+
+            <div class="col-lg-12 " style="margin:5px 5px 5px 5px">
+                <div class="form-group col-lg-12">
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @style = "margin-left:3px;text-align:left; " })
+
+                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control input-sm", @style = "margin: 0px 0px 0px 47px; text-align: left; width: 882px; height: 53px; " })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+
+            <div class="col-lg-12" style="margin:5px 5px 5px 5px">
+                <div class="form-group col-lg-12">
+
+                    <input type="submit" value="Create" style="margin: 0px 0px 0px 142px; text-align: left;" class="btn btn-sm btn-primary" />
+
+                </div>
+            </div>
+        }
+        @*@using (Html.BeginForm("Create", "Item", FormMethod.Post, new { @class = "form-inline" }))
+            {
+                @Html.AntiForgeryToken()
+
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+
+
+
+            }*@
+
+    </div>
+    <br />
+    <div>
+
+        <table class="table table-bordered display" id="table_id">
+            <thead>
+                <tr>
+                    <th>Item Id</th>
+                    <th>Tyre make</th>
+                    <th>Tyre type</th>
+                    <th>Tyre feel</th>
+                    <th>Company name</th>
+                    <th>Tyre size</th>
+                    <th>Vehicle type</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+
+        </table>
+
+    </div>
+</div>
+<script>
+
+        var jd = $.noConflict();
+        jd(document).ready(function () {
+            jd('#table_id').DataTable({
+                "ajax": "http://localhost:8087/Json/sampledata.json",
+                "columns": [
+                    { "data": "Item_Id" },
+                    { "data": "Tyre_make" },
+                    { "data": "Tyre_type" },
+                    { "data": "Tyre_feel" },
+                    { "data": "Company_name" },
+                    { "data": "Tyre_size" },
+                { "data": "Vehicle_type" },
+                    { "data": "Description" }
+                ]
+            });
+} );
+</script>
+
+<script type="text/javascript">
+    
+        function OnSuccess(response) {
+            alert("Successfully saved");
+            //OnSuccess1();
+          //jQuery.ready();
+            //jQuery(document).trigger("ready").unbind("ready");
+            location.reload()
+        }
+        function OnFailure(response) {
+            alert("Something went wrong. Please try again...");
+        }
+</script>

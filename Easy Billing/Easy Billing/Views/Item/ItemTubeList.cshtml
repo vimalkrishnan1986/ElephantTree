@@ -1,0 +1,64 @@
+﻿@model IEnumerable<EasyBilling.Models.Item_Tube>
+
+@{
+    ViewBag.Title = "ItemTubeList";
+    var count = 0;
+}
+
+<h2>Item tube List</h2>
+
+<p>
+    @Html.ActionLink("Create New", "CreateItemTube")
+</p>
+<div style="background-color:white;margin:10px 10px 10px 10px">
+
+    <table class="table table-bordered">
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Item_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tube_size)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Company_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vehicle_type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            count++;
+
+            <tr>
+                <td>
+                    @count;
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item_Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tube_size)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Company_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle_type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+
+            </tr>
+        }
+
+    </table>
+    </div>

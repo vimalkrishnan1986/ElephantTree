@@ -1,0 +1,46 @@
+﻿@model IEnumerable<EasyBilling.Models.Vehicle>
+
+@{
+    ViewBag.Title = "Index";
+    var count = 0;
+}
+
+<h2>Vehicle list</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div style="background-color:white;margin:10px 10px 10px 10px">
+
+    <table class="table table-bordered">
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vehicle_type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vehicle_make)
+            </th>
+
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            count++;
+
+            <tr>
+                <td>
+                    @count;
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle_type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle_make)
+                </td>
+
+            </tr>
+        }
+
+    </table>
+    </div>

@@ -1,0 +1,653 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<EasyBilling.Models.Products_For_Sale>
+@{
+    ViewBag.Title = "Billing";
+
+}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+<!--//tags -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+@*<link href="~/UI styles/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />*@
+<link href="~/UI styles/css/style.css" rel="stylesheet" type="text/css" media="all" />
+<link href="~/UI styles/css/font-awesome.css" rel="stylesheet">
+<!--pop-up-box-->
+<link href="~/UI styles/css/popuo-box.css" rel="stylesheet" type="text/css" media="all" />
+<!--//pop-up-box-->
+<!-- price range -->
+<link rel="stylesheet" type="text/css" href="~/UI styles/css/jquery-ui1.css">
+<!-- fonts -->
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800" rel="stylesheet">
+
+<script src="http://code.jquery.com/jquery-1.7.1.min.js" type="text/javascript"></script>
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+@*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>*@
+
+
+
+<!-- top-header -->
+<div class="header-most-top w3-animate-right" style="background:linear-gradient(0.25turn, #3f87a6, #ebf8e1, #f69d3c);animation-duration:2s">
+    <p style="background:linear-gradient(0.25turn, #3f87a6, #ebf8e1, #f69d3c); color:black">Tyre List</p>
+</div>
+
+
+
+<!-- page -->
+<div class="services-breadcrumb w3-animate-left" style="animation-duration:2s">
+    <div class="agile_inner_breadcrumb">
+        <div class="container">
+            <ul class="w3_short">
+                <li>
+                    <a href="~/">Home</a>
+                    <i>|</i>
+                </li>
+                <li><a href="~/ProductsForSale/Create"> New tyres entry </a><i>|</i></li>
+                <li>Tyre List</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- //page -->
+@if (@ViewBag.Success != null)
+{
+    <div style="text-align:center" id="scc"><label class="label-success" style="text-align:right"> @ViewBag.Success</label></div>
+}
+@if (@ViewBag.Error != null)
+{
+    <div style="text-align:center"><label class="label-danger" style="text-align:right"> @ViewBag.Error</label></div>
+}
+
+<!-- top Products -->
+@*<div class="ads-grid">*@
+<div class="">
+    <br />
+    <div class="container">
+        <!-- tittle heading -->
+        <!-- //tittle heading -->
+        <!-- product left -->
+        <div class="side-bar col-md-3 w3-animate-right" style="box-shadow:0px 0px 15px 0px #D6D6D6;animation-duration:2s">
+            <div class="search-hotel">
+                <h3 class="agileits-sear-head">Search Here...</h3>
+                <script type="text/javascript">
+                    $(function () {
+                        $("#txtSearch1").autocomplete({
+                            source: 'http://localhost:8087/ProductsForSale/GetStudents',
+                            minLength: 1
+                        });
+                    });
+                </script>
+
+                <form method="get" action="~/ProductsForSale/">
+                    <input type="search" placeholder="Tyre name..." name="keyword" required="" id="txtSearch1">
+                    <input type="submit" value=" ">
+                </form>
+            </div>
+            <!-- price range -->
+            @*<div class="range">
+                <h3 class="agileits-sear-head">Price range</h3>
+                <ul class="dropdown-menu6">
+                    <li>
+
+                        <div id="slider-range"></div>
+                        <input type="text" id="amount" style="border: 0; color: #ffffff; font-weight: normal;" />
+                    </li>
+                </ul>
+            </div>*@
+            <!-- //price range -->
+            <!-- food preference -->
+            <style>
+                .collapsible {
+                    background-color: #777;
+                    color: white;
+                    cursor: pointer;
+                    padding: 15px;
+                    width: 100%;
+                    border: none;
+                    text-align: left;
+                    outline: none;
+                    font-size: 13px;
+                }
+
+                    .active1, .collapsible:hover {
+                        background-color: #555;
+                    }
+
+                    .collapsible:after {
+                        content: '\002B';
+                        color: white;
+                        font-weight: bold;
+                        float: right;
+                        margin-left: 5px;
+                    }
+
+                .active1:after {
+                    content: "\2212";
+                }
+
+                .content {
+                    padding: 0 18px;
+                    padding-top: 2%;
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: max-height 0.2s ease-out;
+                    background-color: #f1f1f1;
+                }
+            </style>
+            <div class="left-side">
+                <h3 class="agileits-sear-head">Categories</h3>
+                @foreach (var prdcts in @ViewBag.ctgry)
+                {
+
+                    using (Ajax.BeginForm("Filter", "ProductsForSale", new AjaxOptions
+                    {
+                        HttpMethod = "GET", // HttpMethod to use, GET or POST
+                        UpdateTargetId = "wrapper", // ID of the HTML element to update
+                        InsertionMode = InsertionMode.Replace
+                    }))
+                    {
+                        <ul style="padding-bottom:0px;font-weight:700!important">
+                            @*@prdcts.Product_name*@
+                            <input type="hidden" name="key" value="@prdcts.Product_name" />
+                            <button type="submit" class="collapsible">@prdcts.Product_name</button>
+                            <div class="content">
+                                @foreach (var subcat in @prdcts.Subcategory)
+                                {
+
+                                    <li style="margin-left:20px" class="newli">
+                                        <input type="hidden" class="key" name="key" value="@prdcts.Product_name" />
+                                        <input type="hidden" class="keysub" name="keysub" value="@subcat" />
+                                        <a title="Click" class="keysubbtn"><span class="span">@subcat</span></a>
+                                        @*<span class="span">@subcat</span>*@
+                                    </li>
+                                }
+                            </div>
+                            @*<button class="collapsible">@prdcts.Product_name</button>*@
+
+                        </ul>
+                    }
+
+
+
+                }
+                <script>
+                    $('.keysubbtn').click(function () {
+                        var key = $(this).parents('li.newli').find('.key').val();
+                        var keysub = $(this).parents('li.newli').find('.keysub').val();
+                        $.ajax({
+                            type: 'GET',
+                            url: 'http://localhost:8087/ProductsForSale/Filter?key=' + key+"&&keysub="+keysub,
+
+                        }).done(function (data) {
+                            $("#wrapper").html(data);
+                        });
+                    });
+                </script>
+                <script>
+                    var coll = document.getElementsByClassName("collapsible");
+                    var i;
+
+                    for (i = 0; i < coll.length; i++) {
+                        coll[i].addEventListener("click", function () {
+                            this.classList.toggle("active1");
+                            var content = this.nextElementSibling;
+                            if (content.style.maxHeight) {
+                                content.style.maxHeight = null;
+                            } else {
+                                content.style.maxHeight = content.scrollHeight + "px";
+                            }
+                        });
+                    }
+                </script>
+            </div>
+            <!-- //food preference -->
+            <!-- discounts -->
+            @*<div class="left-side">
+                <h3 class="agileits-sear-head">Discount</h3>
+                <ul>
+                    <li>
+                        <input type="checkbox" class="checked">
+                        <span class="span">5% or More</span>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="checked">
+                        <span class="span">10% or More</span>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="checked">
+                        <span class="span">20% or More</span>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="checked">
+                        <span class="span">30% or More</span>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="checked">
+                        <span class="span">50% or More</span>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="checked">
+                        <span class="span">60% or More</span>
+                    </li>
+                </ul>
+            </div>*@
+            <!-- //discounts -->
+            <!-- //deals -->
+        </div>
+        <!-- //product left -->
+        <!-- product right -->
+        <div class="agileinfo-ads-display col-md-9 w3l-rightpro">
+
+            <span class="glyphicon glyphicon-th-list" tabindex="0" style="float:right;font-size:large" data-toggle="popover" data-placement="left" data-trigger="focus" title="<a href='http://localhost:8087/ProductsForSale/Create'><button type='button'><span class='glyphicon glyphicon-plus'></span></button></a>" data-html="true"></span>
+            <div class="wrapper" id="wrapper">
+                <!-- first section -->
+                <div class="product-sec1">
+
+                    <div class="modal fade" tabindex="-1" id="prcdok" data-keyboard="true" data-backdrop="">
+                        <div class="modal-dialog modal-sm" style="width:30%">
+                            <div class="modal-content " style="width:450px">
+                                <div class="modal-header" style="background-color:black">
+                                    <button type="button" style="color:darkorange" class="close" data-dismiss="modal">
+                                        &times;
+                                    </button>
+                                    <h3 style="color:yellow"><b> Product Deactivation </b></h3>
+
+                                </div>
+                                @*<div class="modal-body">*@
+                                <div class="modal-content">
+
+                                    <div class="col-md-12 col-sm-12 single-right-left ">
+                                        <br />
+                                        <div class="grid images_3_of_2">
+                                            <div class="flexslider">
+
+                                                <h4><b>Are you sure to deactive? </b></h4>
+
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <br /><br />
+                                    <button type="button" class="btn btn-primary"
+                                            data-dismiss="modal">
+                                        Close
+                                    </button>
+
+                                    <button type="button" id="submitproceed" class="btn btn-primary submitproceed" onclick="window.location.href = 'http://localhost:8087/ProductsForSale/Delete/' + window.localStorage.getItem('aa');">
+                                        Proceed
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" tabindex="-1" id="prcdokactv" data-keyboard="true" data-backdrop="">
+                        <div class="modal-dialog modal-sm" style="width:30%">
+                            <div class="modal-content " style="width:450px">
+                                <div class="modal-header" style="background-color:black">
+                                    <button type="button" style="color:darkorange" class="close" data-dismiss="modal">
+                                        &times;
+                                    </button>
+                                    <h3 style="color:yellow"><b> Product Activation </b></h3>
+
+                                </div>
+                                @*<div class="modal-body">*@
+                                <div class="modal-content">
+
+                                    <div class="col-md-12 col-sm-12 single-right-left ">
+                                        <br />
+                                        <div class="grid images_3_of_2">
+                                            <div class="flexslider">
+
+                                                <h4><b>Are you sure to activate? </b></h4>
+
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <br /><br />
+                                    <button type="button" class="btn btn-primary"
+                                            data-dismiss="modal">
+                                        Close
+                                    </button>
+
+                                    <button type="button" id="submitproceed" class="btn btn-primary submitproceed" onclick="window.location.href = 'http://localhost:8087/ProductsForSale/Delete/' + window.localStorage.getItem('aa');">
+                                        Proceed
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @{
+                        var count = 0;
+                    }
+                    @foreach (var prdcts in Model)
+                    {
+
+
+                        <div class="modal fade" tabindex="-1" id="loginModal" data-keyboard="true" data-backdrop="true">
+                            <div class="modal-dialog modal-sm" style="width:30%">
+                                <div class="modal-content " style="width:400px">
+                                    <div class="modal-header" style="background-color:darkgray">
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            &times;
+                                        </button>
+                                        <h4 class="modal-title" style="color:black"><b> Summary of @prdcts.Product_name </b></h4>
+                                    </div>
+                                    @*<div class="modal-body">*@
+                                    <div class="modal-content">
+
+                                        <div class="col-md-5 col-sm-7 single-right-left ">
+                                            <br />
+                                            <div class="grid images_3_of_2">
+                                                <div class="flexslider">
+
+                                                    <div class="thumb-image">
+                                                        <img src="~/UI styles/Test UI/images/tyre.png" data-imagezoom="true" class="img-responsive" alt="">
+                                                    </div>
+
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-7 col-sm-9 single-right-left simpleCart_shelfItem">
+                                            <br />
+                                            <h3><b>@prdcts.Product_name </b></h3>
+
+                                            <p>
+                                                <label>
+                                                    <span class="item_price">Rs. @prdcts.Total</span>
+                                                </label>
+
+                                                <label>Discount: <span class="item_price">Rs. @*@prdcts.Discount*@</span></label>
+                                                <label>Other Details</label>
+                                            </p>
+                                            <div class="single-infoagile">
+                                                <ul>
+                                                    @*<li>
+                                                        Product code: @prdcts.Product_Code
+                                                    </li>
+                                                    <li>
+                                                        HSN/SAC code: @prdcts.HSN_SAC_Code
+                                                    </li>
+                                                    <li>
+                                                        Sell on: @prdcts.Sell_On
+                                                    </li>
+                                                    <li>
+                                                        Tax rate: @prdcts.Tax_rate (%)
+                                                    </li>*@
+
+                                                </ul>
+                                                <p>
+                                                    @foreach (var stk in @ViewBag.productstks)
+                                                    {
+                                                        if (@stk.Product_Token == @prdcts.Token_Number)
+                                                        {
+                                                            if (@stk.Pieces != 0)
+                                                            {
+                                                                <label>In Stock: <span class="item_price">@stk.Pieces (Pieces)</span></label>
+                                                            }
+                                                            else
+                                                            {
+                                                                <label>In Stock: <span class="item_price">@stk.Quantity (Quantity)</span></label>
+                                                            }
+                                                        }
+                                                    }
+
+                                                </p>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                    @*</div>*@
+                                    <div class="modal-footer">
+
+                                        <button type="button" class="btn btn-primary"
+                                                data-dismiss="modal">
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade " tabindex="-1" id="CustModel" data-keyboard="true" data-backdrop="">
+                            <div class="modal-dialog modal-sm" style="width:30%">
+                                <div class="modal-content " style="width:450px">
+
+
+                                    @*<div class="modal-body">*@
+                                    <div class="modal-content">
+
+                                        <div class="col-md-12 col-sm-7 single-right-left ">
+                                            <br />
+                                            <div class="grid images_3_of_2">
+                                                <div class="flexslider">
+
+                                                    @*<div class="thumb-image">
+                                                            <img src="~/UI styles/images/Easybillingimage.jpg" data-imagezoom="true" class="img-responsive" alt="">
+
+                                                        </div>*@
+                                                    <div class="col-md-12" style="padding:20px 30px 20px 3px; ">
+                                                        <div class="col-md-10"><input type="search" placeholder="Search by Customer/Institute token key" class="srch" style="text-align:left; width:100%; padding:0px 0px 0px 0px;color:black; border:none;background:none;border-bottom:2px solid rgb(185, 185, 185);margin-bottom:11px;font-family:'Source Sans Pro', sans-serif" /></div>
+                                                        <div class="col-md-2" style="text-align:left"><button type="button" class="btn-success btnsearch"> Search </button></div>
+                                                        <script type="text/javascript">
+                                                    $(function () {
+                                                        $(".srch").autocomplete({
+
+                                                            source: "http://localhost:8087/Customer/GetInstitutes",
+                                                            minLength: 1
+                                                        });
+                                                    });
+                                                        </script>
+
+                                                    </div>
+                                                    <div class="col-md-12 hidden"><input type="hidden" class="tknno" value="" /></div>
+                                                    <div class="col-md-5" style="text-align:left"><label> Customer name: </label></div>
+                                                    <div class="col-md-7"><input type="text" readonly placeholder="Inst./Customer name" class="cnm" value="" style=" width:100%;padding:0px 0px 0px 0px;color:black; border:none;background:none;border-bottom:2px solid rgb(185, 185, 185);margin-bottom:11px;font-family:'Source Sans Pro', sans-serif" /></div>
+                                                    <div class="col-md-5" style="text-align:left"><label> Email-Id: </label></div>
+                                                    <div class="col-md-7"><input type="text" readonly placeholder="Email-Id" class="eml" style=" width:100%;padding:0px 0px 0px 0px;color:black; border:none;background:none;border-bottom:2px solid rgb(185, 185, 185);margin-bottom:11px;font-family:'Source Sans Pro', sans-serif" /></div>
+                                                    <div class="col-md-5" style="text-align:left"><label> Phone number: </label></div>
+                                                    <div class="col-md-7"><input type="text" readonly placeholder="Phone number" class="phn" value="" style=" width:100%;padding:0px 0px 0px 0px;color:black; border:none;background:none;border-bottom:2px solid rgb(185, 185, 185);margin-bottom:11px;font-family:'Source Sans Pro', sans-serif" /></div>
+                                                    <div class="col-md-5" style="text-align:left"><label> Address: </label></div>
+                                                    <div class="col-md-7"><input type="text" readonly placeholder="Address" class="addrss" value="" style=" width:100%;padding:0px 0px 0px 0px;color:black; border:none;background:none;border-bottom:2px solid rgb(185, 185, 185);margin-bottom:11px;font-family:'Source Sans Pro', sans-serif" /></div>
+                                                    <div class="col-md-5" style="text-align:left"><label> State: </label></div>
+                                                    <div class="col-md-7"><input type="text" readonly placeholder="State" class="stte" value="" style=" width:100%;padding:0px 0px 0px 0px;color:black; border:none;background:none;border-bottom:2px solid rgb(185, 185, 185);margin-bottom:11px;font-family:'Source Sans Pro', sans-serif" /></div>
+                                                    <div class="col-md-5" style="text-align:left"><label> Pan number: </label></div>
+                                                    <div class="col-md-7"><input type="text" readonly placeholder="Pan number" class="pnno" value="" style=" width:100%;padding:0px 0px 0px 0px;color:black; border:none;background:none;border-bottom:2px solid rgb(185, 185, 185);margin-bottom:11px;font-family:'Source Sans Pro', sans-serif" /></div>
+                                                    <div class="clearfix"></div>
+                                                </div>
+
+                                                <br /><br />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-footer">
+
+                                        <button type="button" class="btn btn-primary"
+                                                data-dismiss="modal">
+                                            Close
+                                        </button>
+                                        <button type="button" class="btn btn-primary prcd" data-toggle="modal" data-target="#prcdok" data-dismiss="modal">
+
+                                            Proceed <i class="fa fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4 product-men  w3-animate-left" style="animation-duration:2s">
+                            <div class="men-pro-item simpleCart_shelfItem" id="searchResult">
+                                @*@Html.Action("SearchPeople", new { keyword = "" })*@
+                                @if (@prdcts.Approve == true)
+                                {
+                                    <div class="men-thumb-item picdv" tabindex="0" data-toggle="popover" data-trigger="focus" title="<a href='http://localhost:8087/ProductsForSale/Create'><button type='button'><span class='glyphicon glyphicon-plus'></span></button></a><br/><br/><a href='http://localhost:8087/ProductsForSale/Edit/@prdcts.Token_Number' ><button type='button'><span class='glyphicon glyphicon-edit'></span></button></a>" data-html="true" data-content="<a data-target='#prcdok' data-toggle='modal'  id='dlt1' ><button type='button' ><span class='glyphicon glyphicon-trash'></span></button></a>">
+
+                                        <img src="~/UI styles/Test UI/images/tyre.png" class="morph" alt="Easy Billing" />
+                                        <input class="hidden" id="hddntkninimg" value="@prdcts.Token_Number" />
+                                        @*<span class="product-new-top">New</span>*@
+                                    </div>
+
+                                }
+                                else
+                                {
+                                    <div class="men-thumb-item picdv" tabindex="0" data-toggle="popover" data-trigger="focus" title="<a href='http://localhost:8087/ProductsForSale/Create'><button type='button'><span class='glyphicon glyphicon-plus'></span></button></a><br/><br/><a href='http://localhost:8087/ProductsForSale/Edit/@prdcts.Token_Number' ><button type='button'><span class='glyphicon glyphicon-edit'></span></button></a>" data-html="true" data-content="<a  data-target='#prcdokactv' data-toggle='modal'  id='dlt2' ><button type='button'><span class='glyphicon glyphicon-saved'></span></button></a>">
+
+                                        <img src="~/UI styles/Test UI/images/tyre.png" class="morph" alt="Easy Billing" />
+                                        <input class="hidden" id="hddntkninimg" value="@prdcts.Token_Number" />
+                                        @*<span class="product-new-top">New</span>*@
+                                    </div>
+
+                                }
+                                <div class="item-info-product ">
+                                    @if (@prdcts.Approve == true)
+                                    {
+                                        <div class="caption" style="text-align:center" tabindex="0" data-toggle="popover" data-trigger="focus" title="<a href='http://localhost:8087/ProductsForSale/Create'><button type='button'><span class='glyphicon glyphicon-plus'></span></button></a><br/><br/><a href='http://localhost:8087/ProductsForSale/Edit/@prdcts.Token_Number' ><button type='button'><span class='glyphicon glyphicon-edit'></span></button></a>" data-html="true" data-content="<a data-target='#prcdok' data-toggle='modal'  id='dlt3' ><button type='button'><span class='glyphicon glyphicon-trash'></span></button></a>">
+                                            <input class="hidden" id="hddntkn" value="@prdcts.Token_Number" />
+                                            <h4>
+                                                <a role="spinbutton">@prdcts.Product_name</a>
+
+                                            </h4>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="caption" style="text-align:center" tabindex="0" data-toggle="popover" data-trigger="focus" title="<a href='http://localhost:8087/ProductsForSale/Create'><button type='button'><span class='glyphicon glyphicon-plus'></span></button></a><br/><br/><a href='http://localhost:8087/ProductsForSale/Edit/@prdcts.Token_Number' ><button type='button'><span class='glyphicon glyphicon-edit'></span></button></a>" data-html="true" data-content="<a  data-target='#prcdokactv' data-toggle='modal'  id='dlt4' ><button type='button'><span class='glyphicon glyphicon-saved'></span></button></a>">
+                                            <input class="hidden" id="hddntkn" value="@prdcts.Token_Number" />
+                                            <h4>
+                                                <a role="spinbutton">@prdcts.Product_name</a>
+
+                                            </h4>
+                                        </div>
+                                    }
+
+
+                                    <div class="info-product-price">
+                                        <span class="item_price" style="color:brown">Rs. @prdcts.Total</span>
+
+                                        @*<del>$1020.00</del>*@
+                                    </div>
+                                    <div class="snipcart-details top_brand_home_details item_add single-item hvr-outline-out">
+                                        <a href="~/ProductsForSale/Details/@prdcts.Token_Number">
+                                            <button type="button" class="btnaddtocrt" style="text-align:left;background:linear-gradient(0.25turn, #3f87a6, #ebf8e1, #f69d3c); color:black">
+                                                View details
+                                                <i class="fa fa-eye" aria-hidden="true" style="float:right; text-align:center"></i>
+                                            </button>
+                                        </a>
+
+                                    </div>
+
+                                </div>
+                                @*//yftftfttgfftgftgftftff*@
+                            </div>
+                        </div>
+
+                        count++;
+                        if (count == 3)
+                        {
+                            <div class="col-md-12 col-sm-12 col-xs-12 product-men"><br /></div>
+                            count = 0;
+                        }
+                    }
+
+                    <div class="clearfix"></div>
+                </div>
+                <script>
+                    $('div.caption').on('click', function () {
+
+                        window.localStorage.setItem("aa", $(this).find('#hddntkn').val());
+
+                    });
+                    $('div.picdv').on('click', function () {
+
+                        window.localStorage.setItem("aa", $(this).find('#hddntkninimg').val());
+
+                    });
+                </script>
+                @Html.PagedListPager(Model, Page => Url.Action("Index", new { Page, keyword = Request.QueryString["keyword"] }), new PagedListRenderOptions()
+        {
+            Display = PagedListDisplayMode.IfNeeded,
+            DisplayPageCountAndCurrentLocation = true,
+            DisplayItemSliceAndTotal = true
+        })
+            </div>
+        </div>
+        <!-- //product right -->
+    </div>
+</div>
+<!-- //top products -->
+<!-- popup modal (for signin & signup)-->
+<script>
+    $(document).ready(function () {
+
+
+        $("#scc").fadeOut(8000);
+        if ("@ViewBag.billno" != "") {
+
+            window.open('http://localhost:8087/api/Billing/GetBillingListReport?Bllno=' + '@ViewBag.billno', 'name', 'width=600,height=400');
+        }
+    });
+
+    $('.btnsearch').on('click', function ()
+    {
+        var prdcttkn = $('.srch').val();
+
+        if (prdcttkn == "") {
+            prdcttkn = "0000";
+        }
+        $.ajax
+        ({
+            type: 'POST',
+            url: 'http://localhost:8087/Customer/Getcustdetails',
+                dataType: 'json',
+                data: { 'id': prdcttkn},
+
+            success: function(data)
+            {
+                $('.tknno').val(data.Token_number);
+                $('.cnm').val(data.Customer_Name);
+                $('.eml').val(data.Email);
+                $('.phn').val(data.Phone_number);
+                $('.addrss').val(data.Address);
+                $('.stte').val(data.State_Name);
+                $('.pnno').val(data.Pan_number);
+
+
+            },
+            error: function(ex)
+            {
+                alert("Sorry something went wrong, Please give proper key and try again...");
+                $('.tknno').val("");
+                $('.cnm').val("");
+                $('.eml').val("");
+                $('.phn').val("");
+                $('.addrss').val("");
+                $('.stte').val("");
+                $('.pnno').val("");
+            //var r = jQuery.parseJSON(response.responseText);
+            //alert("Message: " + r.Message);
+            }
+            });
+            return false;
+    });
+
+
+</script>

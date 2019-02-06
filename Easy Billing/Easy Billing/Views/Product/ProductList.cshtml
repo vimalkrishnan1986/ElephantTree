@@ -1,0 +1,55 @@
+﻿@model IEnumerable<EasyBilling.Models.Other_Product>
+
+@{
+    ViewBag.Title = "ProductList";
+    
+    var count = 0;
+}
+
+<h2>Products List</h2>
+
+<p>
+    @Html.ActionLink("Create New", "CreateProduct")
+</p>
+<div style="background-color:white;margin:10px 10px 10px 10px">
+
+
+    <table class="table table-bordered display" id="table_id">
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product_type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+
+        </tr>
+
+        @foreach (var item in Model)
+        {
+
+            count++;
+
+            <tr>
+                <td>
+                    @count;
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product_type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+
+            </tr>
+        }
+
+    </table>
+</div>
