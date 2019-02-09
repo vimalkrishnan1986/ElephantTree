@@ -1,68 +1,48 @@
 ﻿using EasyBilling.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
 
 namespace EasyBilling.Controllers
 {
-    public class EmployeeController : Controller
+    [Route("employees")]
+    public class EmployeeController : BaseController
     {
-        // GET: Employee
+        [HttpGet]
         public ActionResult Index()
-        {
-            using (EasyBillingEntities db = new EasyBillingEntities())
-            {
-                return View(db.Employees.Distinct().ToList());
-            }
-
-        }
-        public ActionResult Create()
         {
             return View();
         }
-        [HttpPost]
-        public async Task<ActionResult> Create(Employee employee)
-        {
-            using (EasyBillingEntities db = new EasyBillingEntities())
-            {
-                employee.Token_number = Guid.NewGuid().ToString();
-                if (ModelState.IsValid)
-                {
-                    db.Employees.Add(employee);
-                    await db.SaveChangesAsync();
-                    ModelState.Clear();
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    return View(employee);
-                }
 
+
+        [HttpGet]
+        [Route("")]
+        public async Task<ActionResult> GetAll()
+        {
+            using (EasyBillingEntities context = new EasyBillingEntities())
+            {
+                return await Task.FromResult(Ok(context.Employees.ToList()));
             }
         }
-        public ActionResult Details(string id)
+
+
+        [HttpPut]
+        [Route("save")]
+        public async Task<ActionResult> Save([FromBody] Employee employee)
         {
-            using (EasyBillingEntities db = new EasyBillingEntities())
+            if (!ModelState.IsValid)
             {
-                return View(db.Employees.Where(z => z.Token_number == id).Distinct().FirstOrDefault());
+                return BadRequest();
             }
-        }
-        public ActionResult Update(string id)
-        {
+
             using (EasyBillingEntities db = new EasyBillingEntities())
             {
-                return View(db.Employees.Where(z => z.Token_number == id).Distinct().FirstOrDefault());
-            }
-        }
-        [HttpPost]
-        public async Task<ActionResult> Update(Employee employee)
-        {
-            using (EasyBillingEntities db = new EasyBillingEntities())
-            {
-                Employee Employeeforupdate = db.Employees.Where(z => z.Token_number == employee.Token_number).Distinct().FirstOrDefault();
+                Employee Employeeforupdate = db.Employees.Where(z => z.Token_number == employee.Token_number)
+                    .Distinct().FirstOrDefault();
                 if (Employeeforupdate != null)
                 {
                     Employeeforupdate.Contact_number = employee.Contact_number;
@@ -74,43 +54,46 @@ namespace EasyBilling.Controllers
                     Employeeforupdate.Leaving_date = employee.Leaving_date;
                     Employeeforupdate.login_required = employee.login_required;
                     Employeeforupdate.Salary = employee.Salary;
-                  
-
                     await db.SaveChangesAsync();
-                    ModelState.Clear();
-                    return RedirectToAction("Index");
+                    return StatusCode((int)HttpStatusCode.OK);
                 }
-                else
+                employee.Token_number = Guid.NewGuid().ToString();
+                if (ModelState.IsValid)
                 {
-                    return View(employee);
+                    db.Employees.Add(employee);
+                    await db.SaveChangesAsync();
+                    return StatusCode((int)HttpStatusCode.Created);
                 }
+            }
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
 
-            }
-        }
-        public ActionResult Delete(string id)
+        [HttpGet]
+        [Route("details/{id}")]
+        public async Task<ActionResult> Details([FromRoute] string id)
         {
             using (EasyBillingEntities db = new EasyBillingEntities())
             {
-                return View(db.Employees.Where(z => z.Token_number == id).Distinct().FirstOrDefault());
+                return await Task.FromResult(Ok(db.Employees.Where(z => z.Token_number == id).Distinct().FirstOrDefault()));
             }
         }
-        [HttpPost]
-        public async Task<ActionResult> Delete(Employee employee)
+
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<ActionResult> Delete([FromRoute]string id)
         {
             using (EasyBillingEntities db = new EasyBillingEntities())
             {
-                Employee EmpforDeletion = db.Employees.Where(z => z.Token_number == employee.Token_number).Distinct().FirstOrDefault();
+                Employee EmpforDeletion = db.Employees.Where(z => z.Token_number == id).Distinct().FirstOrDefault();
                 if (EmpforDeletion != null)
                 {
                     db.Employees.Remove(EmpforDeletion);
                     await db.SaveChangesAsync();
                     ModelState.Clear();
-                    return RedirectToAction("Index");
+                    return StatusCode((int)HttpStatusCode.Accepted);
                 }
-                else
-                {
-                    return View(employee);
-                }
+                return BadRequest($"Invalid token number {id}");
             }
         }
     }
