@@ -12,7 +12,7 @@ namespace EasyBilling
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
-           
+
             config.Formatters.Clear();
             config.Formatters.Add(new JsonMediaTypeFormatter());
             // Web API routes
@@ -23,7 +23,6 @@ namespace EasyBilling
                 routeTemplate: "api/{controller}/{action}/{id}",
                 defaults: new { action = RouteParameter.Optional, id = RouteParameter.Optional }
             );
-          
 
             //var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             //config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
