@@ -1595,7 +1595,6 @@
     <Content Include="Views\Manager\Details.cshtml" />
     <Content Include="Views\Manager\Update.cshtml" />
     <Content Include="Views\Manager\Delete.cshtml" />
-    <Content Include="Views\Employee\Index.cshtml" />
     <Content Include="Views\Employee\Create.cshtml" />
     <Content Include="Views\Employee\Details.cshtml" />
     <Content Include="Views\Employee\Update.cshtml" />
@@ -1626,6 +1625,7 @@
     <Content Include="Views\Item\CreateItemTube.cshtml" />
     <Content Include="Views\Item\ItemTubeList.cshtml" />
     <Content Include="Views\Shared\_MasterEasyBilling.cshtml" />
+    <Content Include="Views\Employee\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

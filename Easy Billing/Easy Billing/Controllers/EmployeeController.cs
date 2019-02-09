@@ -1,17 +1,16 @@
-﻿using EasyBilling.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using EasyBilling.Models;
 
 namespace EasyBilling.Controllers
 {
-    [Route("employees")]
+
     public class EmployeeController : BaseController
     {
+        //for  thorwing the view
         [HttpGet]
         public ActionResult Index()
         {
@@ -20,7 +19,7 @@ namespace EasyBilling.Controllers
 
 
         [HttpGet]
-        [Route("")]
+        [Route("list")]
         public async Task<ActionResult> GetAll()
         {
             using (EasyBillingEntities context = new EasyBillingEntities())
@@ -28,7 +27,6 @@ namespace EasyBilling.Controllers
                 return await Task.FromResult(Ok(context.Employees.ToList()));
             }
         }
-
 
         [HttpPut]
         [Route("save")]
@@ -69,7 +67,7 @@ namespace EasyBilling.Controllers
         }
 
         [HttpGet]
-        [Route("details/{id}")]
+        [Route("{id}")]
         public async Task<ActionResult> Details([FromRoute] string id)
         {
             using (EasyBillingEntities db = new EasyBillingEntities())
