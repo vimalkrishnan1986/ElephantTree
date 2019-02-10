@@ -8,7 +8,7 @@ using EasyBilling.Models;
 namespace EasyBilling.Controllers
 {
 
-    public class EmployeeController : MybaseController
+    public class EmployeeController : Controller
     {
         //for  thorwing the view
         [HttpGet]

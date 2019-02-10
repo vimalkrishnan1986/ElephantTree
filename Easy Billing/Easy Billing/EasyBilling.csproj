@@ -814,6 +814,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Gridmvc.css" />
+    <Content Include="Content\jquery.dataTables.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\flexslider.css" />
@@ -898,6 +899,7 @@
     <Content Include="Models\EasyBillingModel.edmx.diagram">
       <DependentUpon>EasyBillingModel.edmx</DependentUpon>
     </Content>
+    <Content Include="Json\employeList.json" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\CustomProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\CustomProfile2.pubxml" />
@@ -928,6 +930,7 @@
     <Content Include="Scripts\gridmvc.min.js" />
     <Content Include="Scripts\InvoiceCalc.js" />
     <Content Include="Scripts\InvoiceCalcsrch.js" />
+    <Content Include="Scripts\jquery.dataTables.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />

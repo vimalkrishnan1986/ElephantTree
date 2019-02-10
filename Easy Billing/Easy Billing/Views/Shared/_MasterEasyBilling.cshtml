@@ -24,13 +24,14 @@
 
     <!--pop-up-box-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
     @*<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">*@
 
-    <script src="http://localhost:8087/Scripts/JqueryAutocomplete/jquery.js"></script>
-   
+    @*<script src="http://localhost:8087/Scripts/JqueryAutocomplete/jquery.js"></script>*@
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
     <script>
         $(document).ready(function () {
             $('[data-toggle="popover"]').popover();
@@ -73,7 +74,7 @@
 <body style="background-color:#eaeded">
     <div class="se-pre-con"></div>
     <script>
-        $(window).load(function(){
+        $(window).on(function(){
    // PAGE IS FULLY LOADED
    // FADE OUT YOUR OVERLAYING DIV
    $('#overlay').fadeOut();
@@ -736,7 +737,7 @@
     <!-- //copyright -->
     <!-- js-files -->
     <!-- jquery -->
-    <script src="~/UI styles/js/jquery-2.1.4.min.js"></script>
+    @*<script src="~/UI styles/js/jquery-2.1.4.min.js"></script>*@
     <!-- //jquery -->
     <!-- popup modal (for signin & signup)-->
     <script src="~/UI styles/js/jquery.magnific-popup.js"></script>
@@ -788,7 +789,7 @@
     <script src="~/UI styles/js/jquery-ui.js"></script>
     <script>
         //<![CDATA[
-        $(window).load(function () {
+        $(window).on(function () {
             $("#slider-range").slider({
                 range: true,
                 min: 0,
@@ -808,7 +809,7 @@
     <!-- flexisel (for special offers) -->
     <script src="~/UI styles/js/jquery.flexisel.js"></script>
     <script>
-        $(window).load(function () {
+        $(window).on(function () {
             $("#flexiselDemo1").flexisel({
                 visibleItems: 3,
                 animationSpeed: 1000,

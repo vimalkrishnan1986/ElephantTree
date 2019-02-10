@@ -1,7 +1,216 @@
 ﻿
 <html>
+<head>
+    <script>
+        jQuery(document).ready(function ($) {
+            var employeeTable = $('#employeeTable').DataTable({
+                ajax: {
+                    url: "/api/employees",
+                    dataSrc: '',
+                },
+                columns: [
+                    { data: 'Employee_Id' },
+                    { data: 'Employee_name' },
+                    { data: 'Designation' },
+                    { data: 'Email_id' },
+                    { data: 'Contact_number' },
+                    { data: 'Joining_date' },
+                    { data: 'Leaving_date' },
+                    { data: 'Salary' },
+                    { data: 'login_required' },
+                    {
+                        data: '', "defaultContent": '<button type="button" ' +
+                            'class="btn btn-primary pull-left edit" aria-label="Left Align" title="Edit">' +
+                            '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>' +
+                            '</button> ' +
+                            '<button type="button" ' +
+                            'class="btn btn-danger pull-right delete" aria-label="Delete" title="Delete"> ' +
+                            '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
+                            '</button> '
+                    }
+                ]
+            });
+            var editEmployee = function (e) {
+                var isEdit = e.type === 'dblclick';
+                var rowData = isEdit ? employeeTable.row($(this)).data() :
+                    employeeTable.row($(this).closest('tr')[0]).data();
+                if (isEdit || $(this).hasClass('edit')) {
+                    $('#employeeFormModal').modal();
+                    for (var key in rowData) {
+                        var value = key.indexOf('date') != -1 ? new Date(rowData[key]).toISOString().split('T')[0] :
+                            rowData[key];
+                        $('#employeeFormModal').find('#' + key).val(value);
+                    }
+                } else if ($(this).hasClass('delete')) {
+                    $('#confirmEmployeeDeleteModal').modal();
+                    $('#confirmEmployeeDeleteModal').find('input.Token_number').val(rowData.Token_number);
+                }
+            };
+            var resetModal = function (e) {
+                $('#employeeFormModal').find('input').val('');
+                $('#employeeFormModal').find('.modal-footer .alert').hide();
+            }
+            var saveEmployee = function (e) {
+                var alertEl = $('#employeeFormModal').find('.modal-footer .alert');
+                var isDelete = this.id == 'deleteEmployee';
+                var formData = {};
+                var data = $('#employeeForm').serializeArray();
+                var url = !isDelete ? '/api/employees' : '/api/employees/' + $('#confirmEmployeeDeleteModal').find('input.Token_number').val();
+                var type = isDelete ? 'DELETE' : 'PUT'
+                $.each(data, function (i, v) {
+                    formData[v.name] = v.value;
+                });
+                $.ajax({
+                    url: url, data: JSON.stringify(formData),
+                    contentType: 'application/json', type: type,
+                    success: function () {
+                        employeeTable.ajax.reload();
+                        alertEl.show();
+                        setTimeout(function () {
+                            $('#employeeFormModal').modal('hide');
+                        }, 5000);
+                    }, error: function (e) {
+                        alertEl.show();
+                    }
+                });
+            }
 
+            $('#employeeTable tbody').on('click', 'tr td button.btn', editEmployee);
+            $('#employeeTable tbody').on('dblclick', 'tr', editEmployee);
+            $('#employeeFormModal').on('hidden.bs.modal', resetModal);
+            $('body').on('click', '#deleteEmployee', saveEmployee);
+            $('body').on('click', '#employeeFormSubmit', saveEmployee);
+        });
+    </script>
+    <style>
+        .employeeTableWrap {
+            padding-right: 10px !important;
+            padding-left: 10px !important;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .no-padding {
+            padding: 0 !important;
+        }
+
+        .no-margin {
+            margin: 0 !important;
+        }
+    </style>
+</head>
 <body>
-    // employee list screen
+    <div class="container-fluid employeeTableWrap">
+        <div class="panel panel-default no-padding">
+            <div class="panel-heading clearfix">
+                <h3 class="pull-left">Employee list</h3>
+                <button type="button" class="btn btn-success pull-right" title="Add Employee"
+                        data-toggle="modal" data-target="#employeeFormModal">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="panel-body">
+                <div class="employeeTable">
+                    <table id="employeeTable" class="display cell-border order-column">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Designation</th>
+                                <th>Email</th>
+                                <th>Contact Number</th>
+                                <th>Joining Date</th>
+                                <th>Leaving Date</th>
+                                <th>Salary</th>
+                                <th>Login</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="employeeFormModal" tabindex="-1" role="dialog" aria-labelledby="employeeFormModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Add/Edit Employee</h4>
+                </div>
+                <div class="modal-body container-fluid">
+                    <div class="row">
+                        <form id="employeeForm" name="employeeForm">
+                            <input type="hidden" id="Token_number" name="Token_number" />
+                            <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+                                <label for="message-text" class="control-label">Employee Id:</label>
+                                <input type="text" class="form-control" id="Employee_Id" name="Employee_Id" />
+                            </div>
+                            <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+                                <label for="message-text" class="control-label">Employee Name:</label>
+                                <input type="text" class="form-control" id="Employee_name" name="Employee_name" />
+                            </div>
+                            <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+                                <label for="message-text" class="control-label">Designation:</label>
+                                <input type="text" class="form-control" id="Designation" name="Designation" />
+                            </div>
+                            <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+                                <label for="message-text" class="control-label">Contact Number:</label>
+                                <input type="text" class="form-control" id="Contact_number" name="Contact_number" />
+                            </div>
+                            <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+                                <label for="message-text" class="control-label">Email</label>
+                                <input type="email" class="form-control" id="Email_id" name="Email_id" />
+                            </div>
+                            <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+                                <label for="message-text" class="control-label">Joining Date</label>
+                                <input type="date" class="form-control" id="Joining_date" name="Joining_date" />
+                            </div>
+                            <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+                                <label for="message-text" class="control-label">Leaving Date</label>
+                                <input type="date" class="form-control" id="Leaving_date" name="Leaving_date" />
+                            </div>
+                            <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+                                <label for="message-text" class="control-label">Salary</label>
+                                <input type="email" class="form-control" id="Salary" name="Salary" />
+                            </div>
+                            <div class="form-group col-xs-10 col-sm-6 col-md-6 col-lg-6">
+                                <label for="message-text" class="control-label">Login Required</label>
+                                <select class="form-control" id="login_required" name="login_required">
+                                    <option value="true">TRUE</option>
+                                    <option value="false">FALSE</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="alert alert-success pull-left no-margin" role="alert" style="display:none">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>Updated!</strong> Employee data updated successfully.
+                    </div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="employeeFormSubmit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="confirmEmployeeDeleteModal" class="modal fade">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <input type="hidden" name="Token_number" class="Token_number" />
+                <div class="modal-body">
+                    Are you sure?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="deleteEmployee">Delete</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

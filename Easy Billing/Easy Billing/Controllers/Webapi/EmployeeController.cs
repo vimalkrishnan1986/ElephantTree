@@ -25,11 +25,6 @@ namespace EasyBilling.Controllers.Webapi
         [Route("")]
         public async Task<IHttpActionResult> Save([FromBody] Employee employee)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
             using (EasyBillingEntities db = new EasyBillingEntities())
             {
                 Employee Employeeforupdate = db.Employees.Where(z => z.Token_number == employee.Token_number)
@@ -49,14 +44,11 @@ namespace EasyBilling.Controllers.Webapi
                     return Ok();
                 }
                 employee.Token_number = Guid.NewGuid().ToString();
-                if (ModelState.IsValid)
-                {
+                
                     db.Employees.Add(employee);
                     await db.SaveChangesAsync();
                     return Created("", employee);
-                }
             }
-            return InternalServerError();
         }
 
         [HttpGet]
